@@ -46,3 +46,8 @@ function checkOwnership(req, res, next) {
   req.item = item;
   next();
 }
+
+module.exports ={
+  authorizeRole,
+  checkOwnership
+}

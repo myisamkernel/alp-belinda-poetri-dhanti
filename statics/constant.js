@@ -22,15 +22,27 @@ const users = [
   },
 ];
 
-// Sample data - items that users create
 let data = [
   { id: 1, name: "Item 1", owner: "admin" },
   { id: 2, name: "Item 2", owner: "user" },
 ];
 
+const rolesPermissions = {
+  admin: ["read", "write", "delete"],
+  user: ["read", "write"],
+  guest: ["read"],
+};
+
+
 let nextId = data.length + 1;
 
 // Storage for valid refresh tokens
-// In production, use Redis or a database
-// A Set is like an array but faster for checking if something exists
 const refreshTokens = new Set();
+
+module.exports = {
+  users,
+  data,
+  nextId,
+  refreshTokens,
+  rolesPermissions
+};
