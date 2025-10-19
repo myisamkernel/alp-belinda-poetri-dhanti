@@ -3,13 +3,15 @@ const {
   storeData,
   deleteData,
   editData,
+  getOneData,
 } = require("../controllers/data");
-const { authorizeAbac } = require("../middlewares/abac");
 const { authenticateToken } = require("../middlewares/jwtMiddleware");
 const { authorizeRole } = require("../middlewares/rbac");
 
 module.exports = (app) => {
   app.get("/data", authenticateToken, authorizeRole("read"), getListData);
+
+  app.get("/data/:id", authenticateToken, getOneData);
 
   app.post("/data", authenticateToken, authorizeRole("write"), storeData);
 
