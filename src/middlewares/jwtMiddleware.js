@@ -1,3 +1,6 @@
+const jwt = require("jsonwebtoken"); // Library to create and verify JWT tokens
+const { JWT_SECRET, JWT_EXPIRES_IN } = require("../../config/jwt");
+
 // Middleware to authenticate JWT tokens
 function authenticateToken(req, res, next) {
   // Get token from Authorization header
@@ -41,4 +44,8 @@ function authenticateToken(req, res, next) {
     req.user = decoded;
     next();
   });
+}
+
+module.exports = {
+  authenticateToken,
 }

@@ -1,10 +1,8 @@
-const jwt = require("jsonwebtoken"); // Library to create and verify JWT tokens
-const bcrypt = require("bcryptjs"); // Library to hash passwords securely
-const { JWT_SECRET, JWT_EXPIRES_IN } = require("../../config/jwt");
 const {
   loginUser,
   registerUser,
   refreshUserToken,
+  logout,
 } = require("../controllers/user");
 
 module.exports = (app) => {

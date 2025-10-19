@@ -1,5 +1,8 @@
 const jwt = require("jsonwebtoken"); // Library to create and verify JWT tokens
 const bcrypt = require("bcryptjs"); // Library to hash passwords securely
+const session = require("express-session");
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const { users, refreshTokens } = require("../../statics/constant");
 const { JWT_SECRET, JWT_EXPIRES_IN } = require("../../config/jwt");
 
