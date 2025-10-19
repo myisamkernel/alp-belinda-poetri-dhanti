@@ -1,3 +1,4 @@
+const passport = require("passport");
 const {
   loginUser,
   registerUser,
@@ -17,4 +18,22 @@ module.exports = (app) => {
 
   // Logout
   app.post("/api/auth/logout", logout);
+
+  app.get(
+    "/auth/google",
+    passport.authenticate("google", {
+      scope: ["profile", "email"],
+    })
+  );
+
+  // OAuth callback
+  app.get(
+    "/auth/google/callback",
+    passport.authenticate("google", {
+      failureRedirect: "/login-failed",
+    }),
+    (req, res) => {
+      res.render("/dashboard");
+    }
+  );
 };
