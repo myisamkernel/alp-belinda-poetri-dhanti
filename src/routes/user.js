@@ -5,6 +5,7 @@ const {
   refreshUserToken,
   logout,
 } = require("../controllers/user");
+const { authenticateToken } = require("../middlewares/jwtMiddleware");
 
 module.exports = (app) => {
   // Register new user
@@ -18,6 +19,10 @@ module.exports = (app) => {
 
   // Logout
   app.post("/api/auth/logout", logout);
+
+  app.get("/api/auth/verify", authenticateToken, (req, res) => {
+    res.json({ valid: true, user: req.user });
+  });
 
   app.get(
     "/auth/google",

@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title || "Access Controll" %></title>
+  <title><%= title || "Access Control" %></title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 </head>
 <body class="bg-light">
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
+    <div class="container d-flex justify-content-between align-items-center">
       <a href="/" class="navbar-brand">JWT Auth</a>
-      <div>
-        <a href="/register" class="btn btn-outline-light btn-sm me-2">Register</a>
-        <a href="/login" class="btn btn-outline-light btn-sm">Login</a>
+
+      <div id="authButtons">
+        <!-- Buttons will be dynamically rendered by JS -->
       </div>
     </div>
   </nav>
@@ -20,5 +20,35 @@
   <main class="container mt-5">
     <%- body %>
   </main>
+
+  <script>
+    // Function to check for token and render buttons
+    function updateAuthButtons() {
+      const accessToken = localStorage.getItem("accessToken");
+      const authButtons = document.getElementById("authButtons");
+
+      if (accessToken) {
+        // If logged in, show dashboard and logout
+        authButtons.innerHTML = `
+          <a href="/dashboard" class="btn btn-outline-light btn-sm me-2">Dashboard</a>
+          <button class="btn btn-outline-danger btn-sm" id="logoutBtn">Logout</button>
+        `;
+
+        document.getElementById("logoutBtn").addEventListener("click", () => {
+          localStorage.clear();
+          window.location.href = "/";
+        });
+      } else {
+        // If not logged in, show register/login
+        authButtons.innerHTML = `
+          <a href="/register" class="btn btn-outline-light btn-sm me-2">Register</a>
+          <a href="/login" class="btn btn-outline-light btn-sm">Login</a>
+        `;
+      }
+    }
+
+    // Run after DOM loads
+    document.addEventListener("DOMContentLoaded", updateAuthButtons);
+  </script>
 </body>
 </html>
