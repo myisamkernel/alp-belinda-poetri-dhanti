@@ -26,9 +26,11 @@ const getDataID = (req, res) => {
 const getOneData = (req, res) => {
   const dataId = getDataID(req, res);
 
-  authorizeAbacData(req, res, data[dataId]);
+  const isDataValid = authorizeAbacData(req, res, data[dataId]);
 
-  res.json(data[dataId]);
+  if(isDataValid){
+    res.json(data[dataId]);
+  }
 };
 
 const storeData = (req, res) => {
