@@ -15,7 +15,7 @@ module.exports = (app) => {
 
   app.post("/api/data", authenticateToken, authorizeRole("write"), storeData);
 
-  app.put("/api/data", authenticateToken, authorizeRole("write"), editData);
+  app.put("/api/data/:id", authenticateToken, authorizeRole("write"), editData);
 
   app.delete(
     "/api/data/:id",

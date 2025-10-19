@@ -1,12 +1,16 @@
 const authorizeAbacData = (req,res,data) => {
 
     if (!req.user) {
-      return res.status(401).json({ error: "Unauthorized" });
+      res.status(401).json({ error: "Unauthorized" })
+      return false;
     }
     
     if(data.created_by != req.user.id){
-      return res.status(401).json({ error: "Unauthorized" });
+      res.status(401).json({ error: "Unauthorized" })
+      return false;
     }
+
+    return true;
 }
 
 module.exports = {

@@ -65,7 +65,7 @@
         <tr>
           <td>${item.id}</td>
           <td><input type="text" value="${item.name}" class="form-control form-control-sm" id="name-${item.id}" /></td>
-          <td>${item.created_by}</td>
+          <td>${item.created_by_name}</td>
           <td>
             <button class="btn btn-sm btn-success me-1" onclick="editItem(${item.id})">Save</button>
             <button class="btn btn-sm btn-danger" onclick="deleteItem(${item.id})">Delete</button>
@@ -109,10 +109,10 @@
     msg.innerHTML = '';
 
     try {
-      const res = await fetch('/api/data', {
+      const res = await fetch('/api/data/' + id, {
         method: 'PUT',
         headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
-        body: JSON.stringify({ id, name })
+        body: JSON.stringify({ name })
       });
       const data = await res.json();
       if (!res.ok) {

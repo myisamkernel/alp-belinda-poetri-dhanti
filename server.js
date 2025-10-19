@@ -18,8 +18,8 @@ const port = 3000;
 app.use(express.json());
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "./src/views"));
-app.use(expressLayouts); // 👈 Enable layouts
-app.set("layout", "layout"); // 👈 Default layout file (layout.ejs)
+app.use(expressLayouts);
+app.set("layout", "layout");
 
 app.use(express.urlencoded({ extended: true }));
 

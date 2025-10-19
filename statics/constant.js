@@ -32,8 +32,8 @@ const users = [
 ];
 
 let data = [
-  { id: 1, name: "Item 1", created_by: 1 },
-  { id: 2, name: "Item 2", created_by: 1 },
+  { id: 1, name: "Item 1", created_by_name: "admin", created_by: 1 },
+  { id: 2, name: "Item 2", created_by_name: "admin", created_by: 1 },
 ];
 
 const rolesPermissions = {

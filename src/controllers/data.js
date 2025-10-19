@@ -42,10 +42,12 @@ const storeData = (req, res) => {
       error: "Invalid input: name is required and must be a non-empty string",
     });
   }
+
   const newItem = {
     id: nextId++,
     name: req.body.name.trim(),
     created_by: req.user.id,
+    created_by_name: req.user.username,
   };
   data.push(newItem);
   return res.status(201).json(newItem);
@@ -69,11 +71,13 @@ const deleteData = (req, res) => {
 const editData = (req, res) => {
   const dataId = getDataID(req, res);
 
-  authorizeAbacData(req, res, data[dataId]);
+  const isDataValid = authorizeAbacData(req, res, data[dataId]);
 
-  data[dataId].name = req.body.name;
+  if (isDataValid) {
+    data[dataId].name = req.body.name;
 
-  res.json({ message: "Item name changed" });
+    res.json({ message: "Item name changed" });
+  }
 };
 
 module.exports = {
