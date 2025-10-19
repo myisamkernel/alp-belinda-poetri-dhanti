@@ -1,0 +1,63 @@
+<h2 class="mb-4">User Login</h2>
+
+<div class="card shadow-sm p-4">
+  <form id="loginForm">
+    <div class="mb-3">
+      <label for="username" class="form-label">Username</label>
+      <input type="text" id="username" name="username" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input type="password" id="password" name="password" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-success w-100">Login</button>
+  </form>
+
+  <div id="message" class="mt-4 text-center"></div>
+</div>
+
+<script>
+  const form = document.getElementById('loginForm');
+  const messageDiv = document.getElementById('message');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    messageDiv.innerHTML = '';
+
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        messageDiv.innerHTML = `<div class="alert alert-danger">${data.message || 'Login failed'}</div>`;
+        return;
+      }
+
+      // ✅ Store JWT tokens in localStorage
+      localStorage.setItem('accessToken', data.accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      messageDiv.innerHTML = `<div class="alert alert-success">Login successful! Redirecting...</div>`;
+
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 1000);
+
+    } catch (error) {
+      console.error('Error:', error);
+      messageDiv.innerHTML = `<div class="alert alert-danger">An error occurred. Please try again.</div>`;
+    }
+  });
+</script>

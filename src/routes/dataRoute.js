@@ -9,16 +9,16 @@ const { authenticateToken } = require("../middlewares/jwtMiddleware");
 const { authorizeRole } = require("../middlewares/rbac");
 
 module.exports = (app) => {
-  app.get("/data", authenticateToken, authorizeRole("read"), getListData);
+  app.get("/api/data", authenticateToken, authorizeRole("read"), getListData);
 
-  app.get("/data/:id", authenticateToken, getOneData);
+  app.get("/api/data/:id", authenticateToken, getOneData);
 
-  app.post("/data", authenticateToken, authorizeRole("write"), storeData);
+  app.post("/api/data", authenticateToken, authorizeRole("write"), storeData);
 
-  app.put("/data", authenticateToken, authorizeRole("write"), editData);
+  app.put("/api/data", authenticateToken, authorizeRole("write"), editData);
 
   app.delete(
-    "/data/:id",
+    "/api/data/:id",
     authenticateToken,
     authorizeRole("delete"),
     deleteData

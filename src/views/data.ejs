@@ -1,0 +1,169 @@
+<h2 class="mb-4">Data Management</h2>
+
+<div class="mb-3">
+  <form id="createForm" class="d-flex gap-2">
+    <input type="text" id="newName" class="form-control" placeholder="Enter new data name" required />
+    <button type="submit" class="btn btn-primary">Add</button>
+  </form>
+</div>
+
+<div class="mb-3">
+  <h6>🔍 Get One Data by ID</h6>
+  <div class="input-group mb-2">
+    <input type="number" id="getId" class="form-control" placeholder="Enter Data ID" />
+    <button class="btn btn-info" type="button" onclick="getOneItem()">Fetch</button>
+  </div>
+  <pre id="oneDataResult" class="bg-light p-2 rounded border" style="min-height: 60px;"></pre>
+</div>
+
+<div id="message" class="mb-3"></div>
+
+<table class="table table-bordered align-middle">
+  <thead class="table-light">
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Created By</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="dataList">
+    <tr><td colspan="4" class="text-center">Loading...</td></tr>
+  </tbody>
+</table>
+
+<script>
+  const dataList = document.getElementById('dataList');
+  const form = document.getElementById('createForm');
+  const msg = document.getElementById('message');
+  const token = localStorage.getItem('accessToken');
+
+  if (!token) {
+    msg.innerHTML = `<div class="alert alert-warning">Please <a href="/login">login</a> first.</div>`;
+  } else {
+    loadData();
+  }
+
+  // 🟢 Fetch all data
+  async function loadData() {
+    try {
+      const res = await fetch('/api/data', { headers: { 'Authorization': 'Bearer ' + token }});
+      if (!res.ok) {
+        const data = await res.json();
+        msg.innerHTML = `<div class="alert alert-danger">${data.message || 'Failed to fetch data'}</div>`;
+        dataList.innerHTML = `<tr><td colspan="4" class="text-center">Error loading data</td></tr>`;
+        return;
+      }
+
+      const items = await res.json();
+      if (items.length === 0) {
+        dataList.innerHTML = `<tr><td colspan="4" class="text-center text-muted">No data available</td></tr>`;
+        return;
+      }
+
+      dataList.innerHTML = items.map(item => `
+        <tr>
+          <td>${item.id}</td>
+          <td><input type="text" value="${item.name}" class="form-control form-control-sm" id="name-${item.id}" /></td>
+          <td>${item.created_by}</td>
+          <td>
+            <button class="btn btn-sm btn-success me-1" onclick="editItem(${item.id})">Save</button>
+            <button class="btn btn-sm btn-danger" onclick="deleteItem(${item.id})">Delete</button>
+          </td>
+        </tr>
+      `).join('');
+    } catch (err) {
+      console.error(err);
+      msg.innerHTML = `<div class="alert alert-danger">Error: ${err.message}</div>`;
+    }
+  }
+
+  // 🟢 Add new data
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    const name = document.getElementById('newName').value.trim();
+    msg.innerHTML = '';
+
+    try {
+      const res = await fetch('/api/data', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+        body: JSON.stringify({ name })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        msg.innerHTML = `<div class="alert alert-danger">${data.error || 'Failed to add data'}</div>`;
+        return;
+      }
+      msg.innerHTML = `<div class="alert alert-success">Item added successfully!</div>`;
+      form.reset();
+      loadData();
+    } catch (err) {
+      msg.innerHTML = `<div class="alert alert-danger">Error: ${err.message}</div>`;
+    }
+  });
+
+  // 🟡 Edit existing data
+  async function editItem(id) {
+    const name = document.getElementById(`name-${id}`).value.trim();
+    msg.innerHTML = '';
+
+    try {
+      const res = await fetch('/api/data', {
+        method: 'PUT',
+        headers: {'Content-Type':'application/json','Authorization':'Bearer '+token},
+        body: JSON.stringify({ id, name })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        msg.innerHTML = `<div class="alert alert-danger">${data.error || 'Failed to update item'}</div>`;
+        return;
+      }
+      msg.innerHTML = `<div class="alert alert-success">Item updated successfully!</div>`;
+      loadData();
+    } catch (err) {
+      msg.innerHTML = `<div class="alert alert-danger">Error: ${err.message}</div>`;
+    }
+  }
+
+  // 🔴 Delete data
+  async function deleteItem(id) {
+    if (!confirm('Are you sure you want to delete this item?')) return;
+    msg.innerHTML = '';
+
+    try {
+      const res = await fetch(`/api/data/${id}`, { method:'DELETE', headers:{'Authorization':'Bearer '+token}});
+      const data = await res.json();
+      if (!res.ok) {
+        msg.innerHTML = `<div class="alert alert-danger">${data.error || 'Failed to delete item'}</div>`;
+        return;
+      }
+      msg.innerHTML = `<div class="alert alert-success">Item deleted!</div>`;
+      loadData();
+    } catch (err) {
+      msg.innerHTML = `<div class="alert alert-danger">Error: ${err.message}</div>`;
+    }
+  }
+
+  // 🔹 Get One Data by ID
+  async function getOneItem() {
+    const id = document.getElementById('getId').value.trim();
+    const output = document.getElementById('oneDataResult');
+    output.textContent = '';
+    msg.innerHTML = '';
+
+    if (!id) { output.textContent = '⚠️ Please enter an ID'; return; }
+
+    try {
+      const res = await fetch(`/api/data/${id}`, { headers: { 'Authorization': 'Bearer ' + token }});
+      const data = await res.json();
+      if (!res.ok) {
+        output.textContent = `❌ ${data.error || 'Item not found'}`;
+        return;
+      }
+      output.textContent = JSON.stringify(data, null, 2);
+    } catch (err) {
+      output.textContent = `❌ Error: ${err.message}`;
+    }
+  }
+</script>

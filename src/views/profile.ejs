@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+  </head>
+  <body>
+    <h1>User Profile</h1>
+    <p><strong>Name:</strong> <%= user.name %></p>
+    <p><strong>Email:</strong> <%= user.email %></p>
+    <p><strong>Google ID:</strong> <%= user.id %></p>
+    <p><strong>Provider:</strong> <%= user.provider %></p>
+    <img src="<%= user.picture %>" alt="<%= user.name %>" width="100" />
+    <hr />
+    <p><a href="/">Home</a> | <a href="/logout">Logout</a></p>
+  </body>
+</html>

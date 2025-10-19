@@ -1,0 +1,109 @@
+<h2 class="mb-4">Dashboard</h2>
+
+<div id="dashboardContent" class="card p-4 shadow-sm"></div>
+
+<script>
+  const dashboard = document.getElementById("dashboardContent");
+  const user = JSON.parse(localStorage.getItem("user"));
+  const refreshToken = localStorage.getItem("refreshToken");
+
+  if (!user) {
+    dashboard.innerHTML = `
+      <div class="alert alert-warning">
+        You are not logged in. <a href="/login">Go to Login</a>
+      </div>
+    `;
+  } else {
+    dashboard.innerHTML = `
+      <h5>Welcome, ${user.username}!</h5>
+      <p><strong>Email:</strong> ${user.email}</p>
+      <p><strong>Role:</strong> ${user.role}</p>
+
+      <div class="mt-3">
+        <button class="btn btn-secondary me-2" onclick="goToData()">Manage Data</button>
+        <button class="btn btn-warning me-2" onclick="refreshTokenRequest()">Refresh Token</button>
+        <button class="btn btn-danger" onclick="logout()">Logout</button>
+      </div>
+
+      <div id="msg" class="mt-4"></div>
+    `;
+  }
+
+  function goToData() {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      alert("Please login first.");
+      window.location.href = "/login";
+      return;
+    }
+
+    fetch("/data", {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    })
+      .then(async (res) => {
+        if (res.status === 401) {
+          alert("Unauthorized or token expired");
+          window.location.href = "/login";
+          return;
+        }
+        // Get HTML text
+        const html = await res.text();
+        // Replace the current document content
+        document.open();
+        document.write(html);
+        document.close();
+      })
+      .catch((err) => {
+        console.error("Error fetching /data:", err);
+      });
+  }
+
+  async function refreshTokenRequest() {
+    const msg = document.getElementById("msg");
+    const refreshToken = localStorage.getItem("refreshToken");
+
+    try {
+      const res = await fetch("/auth/refresh", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        msg.innerHTML = `<div class="alert alert-danger">${
+          data.message || "Failed to refresh token"
+        }</div>`;
+        return;
+      }
+
+      localStorage.setItem("accessToken", data.accessToken);
+      msg.innerHTML = `<div class="alert alert-success">Access token refreshed!</div>`;
+    } catch (err) {
+      msg.innerHTML = `<div class="alert alert-danger">Error: ${err.message}</div>`;
+    }
+  }
+
+  async function logout() {
+    const msg = document.getElementById("msg");
+    const refreshToken = localStorage.getItem("refreshToken");
+
+    try {
+      await fetch("/auth/logout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken }),
+      });
+    } catch (err) {
+      console.warn("Logout request failed:", err);
+    }
+
+    localStorage.clear();
+    msg.innerHTML = `<div class="alert alert-success">Logged out successfully!</div>`;
+
+    setTimeout(() => (window.location.href = "/login"), 1000);
+  }
+</script>
