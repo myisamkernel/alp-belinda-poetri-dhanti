@@ -38,7 +38,7 @@ module.exports = (app) => {
       failureRedirect: "/login-failed",
     }),
     (req, res) => {
-      res.render("/dashboard");
+      res.render("dashboard");
     }
   );
 };
