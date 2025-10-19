@@ -9,7 +9,7 @@ const users = [
     passwordHash:
       "$2a$10$hSkOnXiBbJotLo7Ixeyg8OALR8WUqollrGks6iYfMi9BUd6m80D7a",
     role: "admin",
-    email: "admin@example.com",
+    email: "beluco991@gmail.com",
   },
   {
     id: 2,

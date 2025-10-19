@@ -11,6 +11,7 @@ const {
   GOOGLE_CLIENT_SECRET,
   CALLBACK_URL,
 } = require("./config/oauth");
+const { users } = require("./statics/constant");
 
 const app = express();
 const port = 3000;
@@ -39,30 +40,44 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+
 passport.use(
   new GoogleStrategy(
     {
       clientID: GOOGLE_CLIENT_ID,
       clientSecret: GOOGLE_CLIENT_SECRET,
       callbackURL: CALLBACK_URL,
-      scope: ["profile", "email"],
-      prompt: "select_account consent",
-      accessType: "offline",
     },
-    function (accessToken, refreshToken, profile, done) {
-      const user = {
-        id: profile.id,
-        email: profile.emails[0].value,
-        name: profile.displayName,
-        picture: profile.photos[0].value,
-        provider: "google",
-      };
+    async (accessToken, refreshToken, profile, done) => {
+      try {
+        // Extract the user's Google email
+        const email = profile.emails[0].value;
 
-      return done(null, user);
+        // Check if the email exists in your static users list
+        const existingUser = users.find((u) => u.email === email);
+
+        if (existingUser) {
+          // ✅ Existing user found
+          return done(null, existingUser);
+        } else {
+          // ⚠️ Not found — handle gracefully
+          // Option 1: Create a temporary user object
+          const newUser = {
+            id: users.length + 1,
+            username: profile.displayName,
+            email: email,
+            role: "user", // default role
+          };
+          users.push(newUser); // Optional if you want to "register" them
+          return done(null, newUser);
+        }
+      } catch (err) {
+        console.error("Google auth error:", err);
+        return done(err, null);
+      }
     }
   )
 );
-
 // Serialize user to session
 passport.serializeUser((user, done) => {
   done(null, user);

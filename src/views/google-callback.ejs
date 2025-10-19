@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Setting up your session...</title>
+</head>
+<body>
+  <script>
+    try {
+      // Store tokens
+      localStorage.setItem('accessToken', '<%= accessToken %>');
+      localStorage.setItem('refreshToken', '<%= refreshToken %>');
+
+      // Optional: store user info (if you want to use it on dashboard)
+      localStorage.setItem('user', JSON.stringify({
+        id: '<%= user.id %>',
+        username: '<%= user.username %>',
+        email: '<%= user.email %>',
+        role: '<%= user.role %>'
+      }));
+
+      // Redirect to dashboard
+      window.location.href = '/dashboard';
+    } catch (err) {
+      console.error("Error storing tokens:", err);
+      document.body.innerHTML = "<h3>Failed to complete login. Please try again.</h3>";
+    }
+  </script>
+
+  <p>Setting up your session... Redirecting to dashboard.</p>
+</body>
+</html>

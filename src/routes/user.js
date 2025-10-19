@@ -4,6 +4,8 @@ const {
   registerUser,
   refreshUserToken,
   logout,
+  generateAccessToken,
+  generateRefreshToken,
 } = require("../controllers/user");
 const { authenticateToken } = require("../middlewares/jwtMiddleware");
 
@@ -31,14 +33,28 @@ module.exports = (app) => {
     })
   );
 
-  // OAuth callback
   app.get(
     "/auth/google/callback",
-    passport.authenticate("google", {
-      failureRedirect: "/login-failed",
-    }),
-    (req, res) => {
-      res.render("dashboard",{title:"dashboard"});
+    passport.authenticate("google", { failureRedirect: "/login-failed" }),
+    async (req, res) => {
+      try {
+        const user = req.user;
+
+        // Generate tokens based on the matched user
+        const accessToken = generateAccessToken(user);
+        const refreshToken = generateRefreshToken(user);
+
+        // Render the token-setup bridge page
+        res.render("google-callback", {
+          title: "Google Login Success",
+          accessToken,
+          refreshToken,
+          user,
+        });
+      } catch (err) {
+        console.error("OAuth callback error:", err);
+        res.redirect("/login-failed");
+      }
     }
   );
 };
