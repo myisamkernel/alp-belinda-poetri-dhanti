@@ -20,11 +20,20 @@ const users = [
     role: "user",
     email: "user@example.com",
   },
+  {
+    id: 3,
+    username: "guest",
+    // Password: user123 (hashed with bcrypt)
+    passwordHash:
+      "$2a$12$9QFjTPV/7R/uzLO7CZMwLuS7F9rJuDZnxTprGuZDIpbAFLpeTJpGu",
+    role: "guest",
+    email: "guest@example.com",
+  },
 ];
 
 let data = [
-  { id: 1, name: "Item 1", owner: "admin" },
-  { id: 2, name: "Item 2", owner: "user" },
+  { id: 1, name: "Item 1", created_by: 1 },
+  { id: 2, name: "Item 2", created_by: 1 },
 ];
 
 const rolesPermissions = {
@@ -32,7 +41,6 @@ const rolesPermissions = {
   user: ["read", "write"],
   guest: ["read"],
 };
-
 
 let nextId = data.length + 1;
 
@@ -44,5 +52,5 @@ module.exports = {
   data,
   nextId,
   refreshTokens,
-  rolesPermissions
+  rolesPermissions,
 };
