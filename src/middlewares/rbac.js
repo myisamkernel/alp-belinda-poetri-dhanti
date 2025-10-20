@@ -8,7 +8,7 @@ function authorizeRole(...allowedRoles) {
     }
   
     if (!rolesPermissions[req.user.role].includes(...allowedRoles)) {
-      return res.status(403).json({ error: "Forbidden" });
+      return res.status(403).json({ error: "Forbidden user role " + req.user.role + " username " + req.user.username });
     }
     next();
   };
