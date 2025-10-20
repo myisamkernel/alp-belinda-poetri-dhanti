@@ -7,9 +7,7 @@ const authorizeAbacData = (req, res, data) => {
   }
 
   if (data.created_by != req.user.id || checkOutsideWorkingHour(req.user.startShift,req.user.endShift)) {
-    
-    console.log(req.user)
-    
+        
     res
       .status(401)
       .json({
