@@ -81,7 +81,7 @@ const registerUser = async (req, res) => {
       username,
       passwordHash,
       email,
-      role: "user", // Default role
+      role: "guest", // Default role
     };
 
     users.push(newUser);
