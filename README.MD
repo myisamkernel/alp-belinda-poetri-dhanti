@@ -2,7 +2,7 @@ Access Policy List
 
 ***RBAC***
 
-Admin
+Supervisor
 
 Route:
 
@@ -10,14 +10,14 @@ Route:
 - /api/data (Store / add data) (REST Method POST)
 - /api/data/:id (Delete Data) (REST Method DELETE)
 
-User
+Admin
 
 Route:
 
 - /api/data (Get list data) (REST Method GET)
 - /api/data (Store / add data) (REST Method POST)
 
-GUEST
+Operator
 
 Route:
 
@@ -25,20 +25,22 @@ Route:
 
 ***ABAC***
 
+*Depend on working hours and created by*
+
+Supervisor
+
+Route:
+
+- /api/data/:id (Get one data depend on created_by field from data) (REST Method GET)
+
 Admin
 
 Route:
 
 - /api/data/:id (Get one data depend on created_by field from data) (REST Method GET)
 
-User
 
-Route:
-
-- /api/data/:id (Get one data depend on created_by field from data) (REST Method GET)
-
-
-Guest
+Operator
 
 Route:
 
@@ -46,13 +48,15 @@ Route:
 
 ***RBAC & ABAC***
 
-Admin
+*Depend on working hours, roles and created by*
+
+Supervisor
 
 Route:
 
 - /api/data (Edit data the only one allowed is authorized role write) (REST Method PUT)
 
-User
+Admin
 
 Route:
 

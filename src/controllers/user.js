@@ -11,6 +11,8 @@ function generateAccessToken(user) {
     username: user.username,
     role: user.role,
     email: user.email,
+    startShift: user.startShift,
+    endShift: user.endShift,
   };
 
   // Create and sign the token
@@ -78,8 +80,10 @@ const loginUser = async (req, res) => {
       user: {
         id: user.id,
         username: user.username,
-        email: user.email,
         role: user.role,
+        email: user.email,
+        startShift: user.startShift,
+        endShift: user.endShift,
       },
       accessToken,
       refreshToken,
@@ -92,7 +96,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-const refreshUserToken = (req,res) => {
+const refreshUserToken = (req, res) => {
   const { refreshToken } = req.body;
 
   if (!refreshToken) {
@@ -160,5 +164,5 @@ module.exports = {
   refreshUserToken,
   logout,
   generateAccessToken,
-  generateRefreshToken
+  generateRefreshToken,
 };
