@@ -1,7 +1,6 @@
 const passport = require("passport");
 const {
   loginUser,
-  registerUser,
   refreshUserToken,
   logout,
   generateAccessToken,
@@ -10,8 +9,6 @@ const {
 const { authenticateToken } = require("../middlewares/jwtMiddleware");
 
 module.exports = (app) => {
-  // Register new user
-  app.post("/api/auth/register", registerUser);
 
   // Login
   app.post("/api/auth/login", loginUser);

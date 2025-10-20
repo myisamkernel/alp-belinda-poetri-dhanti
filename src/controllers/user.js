@@ -35,81 +35,6 @@ function generateRefreshToken(user) {
   });
 }
 
-const registerUser = async (req, res) => {
-  try {
-    const { username, password, email } = req.body;
-
-    // Validate input
-    if (!username || !password || !email) {
-      return res.status(400).json({
-        error: "Missing required fields",
-        message: "Username, password, and email are required",
-      });
-    }
-
-    if (password.length < 6) {
-      return res.status(400).json({
-        error: "Invalid password",
-        message: "Password must be at least 6 characters long",
-      });
-    }
-
-    // Check if username already exists
-    if (users.find((u) => u.username === username)) {
-      return res.status(409).json({
-        error: "User already exists",
-        message: "Username is already taken",
-      });
-    }
-
-    // Check if email already exists
-    if (users.find((u) => u.email === email)) {
-      return res.status(409).json({
-        error: "Email already exists",
-        message: "Email is already registered",
-      });
-    }
-
-    // Hash the password using bcrypt
-    // 10 = salt rounds (how many times to hash)
-    // More rounds = more secure but slower
-    const passwordHash = await bcrypt.hash(password, 10);
-
-    // Create new user
-    const newUser = {
-      id: users.length + 1,
-      username,
-      passwordHash,
-      email,
-      role: "guest", // Default role
-    };
-
-    users.push(newUser);
-
-    // Generate tokens
-    const accessToken = generateAccessToken(newUser);
-    const refreshToken = generateRefreshToken(newUser);
-    refreshTokens.add(refreshToken);
-
-    res.status(201).json({
-      message: "User registered successfully",
-      user: {
-        id: newUser.id,
-        username: newUser.username,
-        email: newUser.email,
-        role: newUser.role,
-      },
-      accessToken,
-      refreshToken,
-    });
-  } catch (error) {
-    res.status(500).json({
-      error: "Registration failed",
-      message: error.message,
-    });
-  }
-};
-
 const loginUser = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -231,7 +156,6 @@ const logout = (req, res) => {
 };
 
 module.exports = {
-  registerUser,
   loginUser,
   refreshUserToken,
   logout,

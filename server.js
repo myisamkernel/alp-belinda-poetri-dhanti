@@ -57,19 +57,9 @@ passport.use(
         const existingUser = users.find((u) => u.email === email);
 
         if (existingUser) {
-          // ✅ Existing user found
           return done(null, existingUser);
         } else {
-          // ⚠️ Not found — handle gracefully
-          // Option 1: Create a temporary user object
-          const newUser = {
-            id: users.length + 1,
-            username: profile.displayName,
-            email: email,
-            role: "user", // default role
-          };
-          users.push(newUser); // Optional if you want to "register" them
-          return done(null, newUser);
+          return done(null, null);
         }
       } catch (err) {
         console.error("Google auth error:", err);

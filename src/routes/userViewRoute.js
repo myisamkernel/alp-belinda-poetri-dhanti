@@ -7,11 +7,14 @@ module.exports = (app) => {
     res.render("login", { title: "login" });
   });
 
-  app.get("/register", (req, res) => {
-    res.render("register", { title: "register" });
-  });
-
   app.get("/dashboard", (req, res) => {
     res.render("dashboard", { title: "dashboard" });
+  });
+
+  app.get("/login-failed", (req, res) => {
+    res.render("login-failed", {
+      title: "Login Failed",
+      error: "Google authentication failed", // or actual error message
+    });
   });
 };
